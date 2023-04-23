@@ -3,6 +3,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class FuzzyReader {
     public static int readNumCuts(Path inputPath) throws IOException {
@@ -10,13 +11,15 @@ public class FuzzyReader {
     }
 
     private static int readVar(Path inputPath, char var) throws IOException {
-        return Files.lines(inputPath, Charset.defaultCharset())
-                .filter(line -> line.startsWith(var + "="))
-                .map(line -> line.substring(2))
-                .findFirst()
-                .map(Integer::parseInt)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid input file: cannot find '" + var + "='"));
+        try (Stream<String> lines = Files.lines(inputPath, Charset.defaultCharset())) {
+            return lines.filter(line -> line.startsWith(var + "="))
+                    .map(line -> line.substring(2))
+                    .findFirst()
+                    .map(Integer::parseInt)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid input file: cannot find '" + var + "='"));
+        }
     }
+
 
     public static FuzzyNumber[][] readMatrix(Path inputPath) throws IOException {
         var m = readVar(inputPath, 'm');

@@ -27,3 +27,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/commons-math3-3.6.1/

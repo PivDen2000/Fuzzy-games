@@ -9,8 +9,11 @@ public class Main {
             Path inputPath = Paths.get(inputOutputFolder + "/input.txt");
             Path outputPath = Paths.get(inputOutputFolder + "/output.txt");
 
-            FuzzyInteger[][] matrix = FuzzyMatrixParser.readMatrixFromFile(inputPath);
-            FuzzyMatrixParser.writeMatrixToFile(matrix, outputPath.toString());
+            FuzzyNumber[][] matrix = FuzzyReader.readMatrixFromFile(inputPath);
+
+            var result = FuzzySolver.calcAlphaCutsFuzzyValue(matrix, 11);
+
+            FuzzyWriter.writeResultToFile(result, outputPath.toString());
 
         } catch (IOException e) {
             e.printStackTrace();

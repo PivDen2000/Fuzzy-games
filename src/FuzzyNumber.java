@@ -11,5 +11,4 @@ public class FuzzyNumber {
     public String toString() {
         return Arrays.toString(arr);
     }
-
 }

@@ -22,66 +22,56 @@ public class FuzzySolver {
 
             for (var i = 0; i < cuts.length; i++) {
                 var numMatrix = fuzzyToNum(matrix, cuts[i], true);
-                result[1][i] = solve(numMatrix, true);
-                //result[2][i] = solve(intMatrix, false);
+                result[1][i] = solve(numMatrix, false);
+                numMatrix = fuzzyToNum(matrix, cuts[i], false);
+                result[2][i] = solve(numMatrix, true);
             }
 
             return result;
         }
 
-        private static Double[][] fuzzyToNum(FuzzyNumber[][] matrix, Double cut) {
+        private static Double[][] fuzzyToNum(FuzzyNumber[][] matrix, Double cut, boolean isMax) {
             int m = matrix.length;
             int n = matrix[0].length;
-            Double[][] result = new Double[m][n];
+            var result = new Double[m][n];
 
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     var values = matrix[i][j].arr;
 
-                    var min = values[0];
-                    var max = values[values.length - 1];
-                    var cutValue = cut * (max - min) + min;
-
-                    var index = -1;
-                    var diff = Double.POSITIVE_INFINITY;
-                    for (int k = 0; k < values.length; k++) {
-                        var currentDiff = Math.abs(cutValue - values[k]);
-                        if (currentDiff < diff) {
-                            diff = currentDiff;
-                            index = k;
-                        }
+                    if (values.length == 1)
+                    {
+                        result[i][j] = values[0];
+                        continue;
                     }
-                    result[i][j] = values[index];
+
+                    var max = values[values.length - 1];
+                    var min = values[0];
+                    var mid = new Double[values.length - 2];
+                    for (var k = 1; k < values.length - 1; k++) {
+                        mid[k - 1] = values[k];
+                    }
+
+                    var maxCutValue = max - cut*(max-mid[mid.length-1]);
+                    var minCutValue = min + cut*(mid[0]-min);
+
+                    result[i][j] = isMax ? maxCutValue : minCutValue;
                 }
             }
             return result;
         }
-    private static Double[][] fuzzyToNum(FuzzyNumber[][] matrix, Double cut, boolean beta) {
-        int m = matrix.length;
-        int n = matrix[0].length;
-        var result = new Double[m][n];
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                var values = matrix[i][j].arr;
-
-                var min = values[0];
-                var max = values[values.length - 1];
-                var cutValue = cut * (max - min) + min;
-
-                result[i][j] = cutValue;
-            }
-        }
-        return result;
-    }
-
-        public static Double solve(Double[][] matrix, boolean max) {
+        public static Double solve(Double[][] matrix, boolean isMax) {
             int m = matrix.length;
             int n = matrix[0].length;
 
             double[] c = new double[n + 1];
             c[n] = 1;
             LinearObjectiveFunction f = new LinearObjectiveFunction(c, 0);
+
+            if(isMax){
+                matrix = transpose(matrix);
+            }
 
             double[][] A = new double[2*m + 1][n + 1];
             for (int i = 0; i < m; i++) {
@@ -92,7 +82,7 @@ public class FuzzySolver {
             }
             Arrays.fill(A[m], 1);
             A[m][n] = 0;
-            for(int i = 0; i<m; i++){
+            for(var i = 0; i<m; i++){
                 A[m+1+i][i] = 1;
             }
 
@@ -101,7 +91,7 @@ public class FuzzySolver {
 
             Relationship[] r = new Relationship[2*m + 1];
             for (int i = 0; i < m; i++) {
-                r[i] = Relationship.LEQ;
+                r[i] = isMax ? Relationship.GEQ : Relationship.LEQ;
                 r[i + m + 1] = Relationship.GEQ;
             }
             r[m] = Relationship.EQ;
@@ -115,8 +105,25 @@ public class FuzzySolver {
             SimplexSolver solver = new SimplexSolver();
             PointValuePair optSolution = solver.optimize(new MaxIter(100), f, new
                             LinearConstraintSet(constraints),
-                    GoalType.MINIMIZE, new NonNegativeConstraint(false));
+                    isMax ? GoalType.MAXIMIZE : GoalType.MINIMIZE, new NonNegativeConstraint(false));
 
             return optSolution.getValue();
         }
+
+    private static Double[][] transpose(Double[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        var result = new Double[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(i == j) {
+                    result[i][i] = matrix[i][i];
+                    continue;
+                }
+                result[i][j] = matrix[j][i];
+            }
+        }
+        return result;
     }
+}

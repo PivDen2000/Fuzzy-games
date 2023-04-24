@@ -1,3 +1,4 @@
+// Copyright (c) 2023 Denys Piven
 import java.util.Arrays;
 
 public class FuzzyNumber {

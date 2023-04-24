@@ -1,3 +1,4 @@
+// Copyright (c) 2023 Denys Piven
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;

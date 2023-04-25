@@ -1,10 +1,10 @@
+// Copyright (c) 2023 Denys Piven
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.optim.MaxIter;
 import org.apache.commons.math3.optim.linear.*;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
 import java.util.ArrayList;
-// Copyright (c) 2023 Denys Piven
 import java.util.Arrays;
 import java.util.stream.IntStream;
 

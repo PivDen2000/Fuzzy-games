@@ -9,7 +9,7 @@ public class FuzzyWriter {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (var row : matrix) {
                 writer.write(String.join("\t", Arrays.stream(row)
-                        .map(val -> String.format("%.4f", val))
+                        .map(val -> String.format("%.8f", val))
                         .toArray(String[]::new)));
                 writer.newLine();
             }

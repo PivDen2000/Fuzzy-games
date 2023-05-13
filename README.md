@@ -8,7 +8,7 @@ The materials folder contains a collection of research papers and articles relat
 In addition to research papers, the folder also include example of course work completed by me from the Faculty of Computer Science and Cybernetics at Taras Shevchenko National University of Kyiv. These course work offer practical applications of the Fuzzy-games project and can serve as a source of inspiration for further development.
 
 ### Prerequisites
-- Java 8 or higher
+- Java 20
 - Apache Commons Math 3.6 or higher
 
 ### Installation
@@ -28,6 +28,7 @@ To use the Fuzzy-games project, follow these steps:
 - Run the project.
 - The program reads input.txt, parses data to a fuzzy matrix, creates systems of linear inequalities in alpha cuts, and solves them using FuzzySolver (number of alpha cuts can be adjusted).
 - The result will be written to a file named output.txt in the input_output folder using FuzzyWriter.
+- Additionally, a visualization graph of the points will be generated in SVG format with the name image.svg.
 
 ### Contributing
 You are welcome to contribute to this project by submitting pull requests or raising issues related to bugs or feature requests.

@@ -1,3 +1,4 @@
+// Copyright (c) 2023 Denys Piven
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
